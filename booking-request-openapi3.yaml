@@ -1,0 +1,1534 @@
+openapi: 3.0.2
+info:
+  title: B2B Shipments Documentation API - Booking Request
+  description: >-
+    Learn about the shipment object model concept, and how to presist and re-use shipment data inside Cargosmart B2B.
+    
+  
+    CargoSmart has provide two ways to access your shipment booking status 
+    
+    1. **Shipment Booking** - query by shipment number such as Booking number or SID. 
+
+    2. **Shipment Tracking** - query by shipment number such as Booking number or Bill of lading number. 
+  
+  # If commit to the hkggitlab, need to replace the following:
+  # 1. "https://api.swaggerhub.com/domains/oocl-isd/shipmentContextType/1.0.0" to "./shipmentContextType-1.0.0-openapi3.yaml"
+  # 2. "https://api.swaggerhub.com/domains/oocl-isd/cs-b2b-common-domain/1.0.0" to "./csb2bCommonDomain-1.0.0-openapi3.yaml"
+  
+  contact:
+    name: CargoSmart API Support
+    email: APISUPP@cargosmart.com
+    url: https://www.cargosmart.com  
+  version: 1.0.1
+  # type: object
+  # $id: http://cargosmart.com/csbc/schemas/bookingRequest.json
+servers: []
+# Added by API Auto Mocking Plugin
+#  - description: SwaggerHub API Auto Mocking
+#    url: https://virtserver.swaggerhub.com/b2bis/b2b_shipment_api/2.0.0
+#  - url: 'https://api.cargosmart.com'
+#    description: Production
+#  - url: 'https://sandbox-api.cargosmart.com'
+#    description: Sandbox
+tags:
+  - name: shipmentBookings
+    description: |
+      Shipment Service API 
+       - Create/Update/Cancel the shipment booking
+       - Search the shipment booking
+  #- name: container
+  #  description: Container Tracking
+  #- name: subscription
+  # description: >- 
+  #   1) Shipment Booking Status subscription
+  #   
+  #   2) Shipment Milestone subscription
+paths:
+  /b2b/shipment-bookings:
+    post:
+      summary: Create/Update/Cancel a shipment booking
+      operationId: createShipmentBookingId
+      tags:
+        - shipmentBookings
+      description: Use this operation to create/update/cancel the shipment booking. 
+      parameters:
+        - $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/parameters/xBassRefId'
+      requestBody:
+        description: Create/Update/Cancel shipment booking
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Success'
+              examples:
+                ReceivedSuccess:
+                  value:
+                    refId: '6304696a511b9a666887a7e6'
+                    systemMessage: 'Your message was received successfully.'
+                    responses: []
+        default:
+          description: Unexpected error
+          content:
+            "*/*":
+              schema:
+                type: object
+                items:
+                  $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/EmptyBody'
+              examples:
+                ERR500:
+                  value: null
+    get:
+      tags:
+        - shipmentBookings
+      summary: Search shipments by using the reference number
+      operationId: searchShipmentBookingId
+      description: |
+        Query shipments information by using one of below reference number
+          1. **shipmentId** (CS Booking Reference Number)
+          2. **bookingReferenceNum** (Booking Reference Number)
+          3. **shipperIdentifyingNum** (Shipper's Identifying Number)
+      parameters:
+        - $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/parameters/xBassRefId'
+        - name: shipmentId
+          in: query
+          description: CS Booking Reference Number
+          required: false
+          schema:
+            type: string
+        - name: bookingReferenceNum
+          in: query
+          description: Booking Reference Number
+          required: false
+          schema:
+            type: string
+        - name: shipperIdentifyingNum
+          in: query
+          description: Shipper's Identifying Number
+          required: false
+          schema:
+            type: string            
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingRequest'
+              examples:
+                BookingRequest:
+                  value:
+                    requestorBookingReference: '234567'
+                    carrierBookingNumber: '5258530019'
+                    actionType: NEW123
+                    carrier:
+                      scac: OOLU
+                      name: Orient Overseas Container Line
+                    bookingOffice: HKG
+                    creationDetails:
+                      requestedBy: John Lee
+                      emailAddress: john.lee@univerial.com
+                      requestedDateTime:
+                        local: '2022-07-10T06:11:01.263+08:00'
+                    notificationEmailAddress: john.lee@universal.com
+                    shipmentCargoType: GC
+                    shipmentTrafficMode:
+                      outBound: FCL
+                      inBound: FCL
+                    totalNumberOfPackage: 10
+                    totalNumberOfEquipment: 2
+                    shipper:
+                      partyName: Universal Company Ltd.
+                      carrierCustomerCode: SAP2323444
+                      isNeedReplyPartyEmail: true
+                      contact:
+                        firstName: John
+                        lastName: Lee
+                        contactPhone:
+                          number: '66667778'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactFax:
+                          number: '66667777'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactEmailAddress: john.lee@universal.com
+                      address:
+                        country: United States
+                        address: 10/F Universal Building
+                        city: California
+                        county: Oakland
+                        state: ''
+                      salesOfficeCode: CHN
+                    forwarder:
+                      partyName: Universal Company Ltd.
+                      carrierCustomerCode: SAP2323444
+                      isNeedReplyPartyEmail: true
+                      contact:
+                        firstName: John
+                        lastName: Lee
+                        contactPhone:
+                          number: '66667778'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactFax:
+                          number: '66667777'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactEmailAddress: john.lee@universal.com
+                      address:
+                        country: United States
+                        address: 10/F Universal Building
+                        city: California
+                        county: Oakland
+                        state: ''
+                      salesOfficeCode: CHN
+                    bookingParty:
+                      partyName: Universal Company Ltd.
+                      carrierCustomerCode: SAP2323444
+                      isNeedReplyPartyEmail: true
+                      contact:
+                        firstName: John
+                        lastName: Lee
+                        contactPhone:
+                          number: '66667778'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactFax:
+                          number: '66667777'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactEmailAddress: john.lee@universal.com
+                      address:
+                        country: United States
+                        address: 10/F Universal Building
+                        city: California
+                        county: Oakland
+                        state: ''
+                      salesOfficeCode: CHN
+                    consignee:
+                      partyName: Universal Company Ltd.
+                      carrierCustomerCode: SAP2323444
+                      isNeedReplyPartyEmail: true
+                      contact:
+                        firstName: John
+                        lastName: Lee
+                        contactPhone:
+                          number: '66667778'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactFax:
+                          number: '66667777'
+                          areaCode: '1'
+                          countryCode: '1'
+                        contactEmailAddress: john.lee@universal.com
+                      address:
+                        country: United States
+                        address: 10/F Universal Building
+                        city: California
+                        county: Oakland
+                        state: ''
+                      salesOfficeCode: CHN
+                    requestedRoute:
+                      haulage:
+                        outBound: C
+                        inBound: C
+                      por:
+                        locationName: Hong Kong
+                        cityDetails:
+                          unLocode: HKHKG
+                          country: HKG
+                          city: Hong Kong
+                          county: ''
+                          state: ''
+                      fnd:
+                        locationName: Long Beach
+                        cityDetails:
+                          unLocode: USLGB
+                          country: USA
+                          city: Long Beach
+                          county: Los Angeles
+                          state: California
+                      firstPOL:
+                        port:
+                          portName: Hong Kong
+                          portCode: HKHKG
+                          city: Hong Kong
+                          locationCode:
+                            unLocationCode: HKHKG
+                          country: Hong Kong
+                      lastPOD:
+                        port:
+                          portName: Long Beach
+                          portCode: USLGB
+                          city: Long Beach
+                          county: Los Angeles
+                          state: California
+                          locationCode:
+                            unLocationCode: HKHKG
+                          country: USA
+                      voyageInfo:
+                        firstPOLOutboundVoyage:
+                          service: KTX2
+                          vessel: '422'
+                          vesselName: OOCL SAVANNAH
+                          vesselNationality: Hong Kong, China
+                          voyage: 422S
+                          direction: S
+                          vesselImo: '9404871'
+                          callSign: VRGO8
+                        lastPODInboundVoyage:
+                          service: JPSW
+                          vessel: '072'
+                          vesselName: NYK VENUS
+                          vesselNationality: Panama
+                          voyage: 072E
+                          direction: E
+                          vesselImo: '9312793'
+                          callSign: 3EJG5
+                      routePoints:
+                      - pointSequence: 1
+                        pointRole: FirstPOL
+                        location:
+                          locationName: Hong Kong
+                          unLocode: HKHKG
+                          portName: Hong Kong
+                          portCode: HKHKG
+                          city: Hong Kong
+                          country: Hong Kong
+                        arrivingTransportInfo:
+                          mode: Vessel
+                          voyageInfo:
+                            service: KTX2
+                            vessel: '422'
+                            vesselName: OOCL SAVANNAH
+                            vesselNationality: Hong Kong, China
+                            voyage: 422S
+                            direction: S
+                            vesselImo: '9404871'
+                            callSign: VRGO8
+                          eta:
+                            local: '2022-07-10T06:11:01.263+08:00'
+                        departingTransportInfo:
+                          mode: Vessel
+                          voyageInfo:
+                            service: KTX2
+                            vessel: '422'
+                            vesselName: OOCL SAVANNAH
+                            vesselNationality: Hong Kong, China
+                            voyage: 422S
+                            direction: S
+                            vesselImo: '9404871'
+                            callSign: VRGO8
+                          etd:
+                            local: '2022-07-12T06:11:01.263+08:00'
+                      - pointSequence: 2
+                        pointRole: Transit
+                        location:
+                          locationName: Kobe
+                          unLocode: JPUKB
+                          portName: Kobe
+                          portCode: JPUKB
+                          city: Kobe
+                          country: Japan
+                        arrivingTransportInfo:
+                          mode: Vessel
+                          voyageInfo:
+                            service: KTX2
+                            vessel: '422'
+                            vesselName: OOCL SAVANNAH
+                            vesselNationality: Hong Kong, China
+                            voyage: 422S
+                            direction: S
+                            vesselImo: '9404871'
+                            callSign: VRGO8
+                          eta:
+                            local: '2022-07-16T06:11:01.263+08:00'
+                        departingTransportInfo:
+                          mode: Vessel
+                          voyageInfo:
+                            service: JPSW
+                            vessel: '072'
+                            vesselName: NYK VENUS
+                            vesselNationality: Panama
+                            voyage: 072E
+                            direction: E
+                            vesselImo: '9312793'
+                            callSign: 3EJG5
+                          etd:
+                            local: '2022-07-22T06:11:01.263+08:00'
+                      - pointSequence: 3
+                        pointRole: LastPOD
+                        location:
+                          locationName: Long Beach
+                          unLocode: USLGB
+                          portName: Long Beach
+                          portCode: USLGB
+                          city: Long Beach
+                          county: Los Angeles
+                          state: California
+                          country: USA
+                        arrivingTransportInfo:
+                          mode: Vessel
+                          voyageInfo:
+                            service: JPSW
+                            vessel: '072'
+                            vesselName: NYK VENUS
+                            vesselNationality: Panama
+                            voyage: 072E
+                            direction: E
+                            vesselImo: '9312793'
+                            callSign: 3EJG5
+                          eta:
+                            local: '2022-07-30T06:11:01.263+08:00'
+                    externalReferences:
+                    - referenceNumber: '5258530019'
+                      referenceDescription: Booking Number
+                      referenceType: BKG
+                    - referenceNumber: '234567'
+                      referenceDescription: Shipper's Identifying Number for Shipment
+                      referenceType: SID
+                    requestedDepartureWindow:
+                      from:
+                        local: '2022-07-10T06:11:01.263+08:00'
+                      locationType: POR
+                    requestedArrivalWindow:
+                      from:
+                        local: '2022-07-10T06:11:01.263+08:00'
+                      locationType: FND
+                    containers:
+                    - cargosmartContainerSizeType: 22G0
+                      partnerContainerSizeType: 22G0
+                      carrierContainerSizeType: 22G0
+                      quantity: 1
+                      estimatedContainerGrossWeight:
+                        weight: 100.1
+                        weightUnit: KGS
+                      estimatedContainerNetWeight:
+                        weight: 100.1
+                        weightUnit: KGS
+                      estimatedContainerVolume:
+                        volume: 5
+                        volumeUnit: CBF
+                      isSOC: false
+                      haulage:
+                        outBound: C
+                        inBound: C
+                      emptyPickupDateTime:
+                        local: '2022-07-10T06:11:01.263+08:00'
+                      fullReturnDateTime:
+                        local: '2022-07-10T06:11:01.263+08:00'
+                    cargos:
+                    - cargoSequence: 1
+                      cargoNature: GC
+                      cargoDescrption: General Cargo
+                      packaging:
+                        packageType: BG
+                        packageQty: 100
+                        packageDescription: Bags
+                      grossWeight:
+                        weight: 100.1
+                        weightUnit: KGS
+                      netWeght:
+                        weight: 100.1
+                        weightUnit: KGS
+                      volume:
+                        volume: 5
+                        volumeUnit: CBF
+                      marksAndNumbers:
+                        marksAndNumbersSequence: 1
+                        marksAndNumbersDescription: General Cargo with Bags
+                    - cargoSequence: 2
+                      cargoNature: DG
+                      cargoDescrption: Danger Goods
+                      packaging:
+                        packageType: BX
+                        packageQty: 10
+                        packageDescription: Box
+                      grossWeight:
+                        weight: 20.1
+                        weightUnit: KGS
+                      netWeght:
+                        weight: 20.1
+                        weightUnit: KGS
+                      volume:
+                        volume: 3
+                        volumeUnit: CBF
+                      marksAndNumbers:
+                        marksAndNumbersSequence: 1
+                        marksAndNumbersDescription: Danger Cargo with Box
+                      dgCargoSpec:
+                        imdgPage: IMCOP
+                        imcoClass: IMCOC
+                        unNumber: 2345
+                        technicalName: This is a farmable goods
+                        properShippingName: Proper Shipping Name
+                        packageGroup:
+                          code: 1
+                          innerPackageDescription:
+                            packageType: BX
+                            packageQty: 10
+                            packageDescription: Box
+                        mfagNumber: MFAG
+                        emsNumber: 123
+                        grossWeight:
+                          weight: 20.1
+                          weightUnit: KGS
+                        flashPoint:
+                          temperature: 40
+                          temperatureUnit: C
+                        elevatedTemparture:
+                          temperature: 20.1
+                          temperatureUnit: C
+                        isLimitedQuantity: false
+                        isInhalationHazardous: false
+                        isReportableQuantity: false
+                        isEmptyUnclean: false
+                        isMarinePollutant: false
+                        remarks: DG Remarks
+                        emergencyContacts:
+                          firstName: John
+                          lastName: Lee
+                          contactPhone:
+                            number: 66667778
+                            areaCode: 1
+                            countryCode: 1
+                          contactFax:
+                            number: 66667777
+                            areaCode: 1
+                            countryCode: 1
+                          contactEmailAddress: john.lee@universal.com 
+                    specialInstruction:
+                      specialHandlings:
+                      - code: DFF
+                        description: Door Off
+                      exportDeclarationRequired: S
+                    remarks:
+                    - value: string
+                      remarkType: string
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BookingRequest'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'
+              examples:
+               ERR400:
+                value: 
+                  code: '400'
+                  message: 'Parse Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'
+              examples:
+               ERR400:
+                value: 
+                  code: '401'
+                  message: 'authError'                
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'
+              examples:
+               ERR400:
+                value: 
+                  code: '404'
+                  message: 'The specified resource was not found'                  
+        default:
+          description: Unexpected error
+          content:
+            "*/*":
+              schema:
+                type: object
+                items:
+                  $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/EmptyBody'
+              examples:
+                ERR500:
+                  value: null                  
+components:
+  schemas:
+    BookingRequest:
+      type: object
+      description: Booking Request Schema
+      required:
+        - requestorBookingReference
+        - actionType
+        - carrier
+        - shipmentCargoType
+        - containers
+        - cargos
+      anyOf:
+        - required:
+          - shipper
+        - required:
+          - forwarder      
+      properties:
+        #brVersionNumber:
+        # description: 'Booking request version number'
+        #  type: integer
+        #  nullable: true
+        requestorBookingReference:
+          type: string
+          description: 'The booking references provided by booking request creator'
+          example: '234567'
+        carrierBookingNumber:
+          type: string
+          description: 'Carrier assigned Booking Number'
+          example: '5258530019'
+          nullable: true
+        actionType:
+          type: string
+          description: |
+            Shipment Action Type
+            - NEW (New)
+            - UPDATE (Update)
+            - CANCEL (Cancel)         
+          example: 'NEW'
+          enum:
+            - NEW
+            - UPDATE
+            - CANCEL
+        carrier:
+          type: object
+          description: 'Carrier information'
+          required:
+            - scac
+          properties:
+            scac:
+              description: 'Carrier SCAC (Standard Carrier Alpha Code)'
+              maxLength: 4
+              minLength: 4
+              type: string
+              example: 'OOLU'
+            name:
+              type: string
+              description: 'Carrier Name'
+              example: 'Orient Overseas Container Line'
+              nullable: true
+        bookingOffice:
+          type: string
+          description: 'Booking Office Code'
+          example: 'HKG'
+          nullable: true
+        creationDetails:
+          type: object
+          description: 'Booking request creation Details'
+          properties:
+            requestedBy:
+              type: string
+              description: 'The contact person who request the booking'
+              example: 'John Lee'
+            emailAddress:
+              type: string
+              description: 'The email address of the contact person who request the booking'
+              example: 'john.lee@univerial.com'
+            requestedDateTime:
+              description: 'Booking request created DateTime'
+              allOf:
+                - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/DateTimeType'
+        notificationEmailAddress:
+          type: string
+          example: 'john.lee@universal.com'
+        shipmentCargoType:
+          type: string
+          description: |
+            Identification of this Shipment Cargo
+            - GC (General)
+            - DG (Dangerous)
+            - RF (Reefer)
+            - RD (Reefer Dangerous)
+            - AD (Awkward Dangerous)
+            - AW (Awkward)
+            - MIXED (Mixed Cargo)
+          example: 'GC'
+          enum:
+            - GC
+            - DG
+            - RF
+            - RD
+            - AD
+            - AW
+            - MIXED
+        shipmentTrafficMode:
+          type: object
+          properties:
+            outBound:
+              type: string
+              description: |
+                Outbound traffic mode, the transport movement details for the equipment. 
+                - FCL (Full container load)
+                - LCL (Less than container load)
+              enum:
+                - FCL
+                - LCL
+              default: FCL
+            inBound:
+              type: string
+              description: |
+                Inbound traffic mode, the transport movement details for the equipment.
+                - FCL (Full container load)
+                - LCL (Less than container load) 
+              enum:
+                - FCL
+                - LCL
+              default: FCL
+        totalNumberOfPackage:
+          description: 'The total number of packages'
+          example: 10
+          type: integer
+        totalNumberOfEquipment:
+          description: 'The total number of containers'
+          example: 2
+          type: integer
+        shipper:
+          allOf:
+            - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/ShipmentPartyType'
+          description: 'Shipper Information'
+        forwarder:
+          allOf:
+            - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/ShipmentPartyType'
+          description: 'Forwarder information'
+        bookingParty:
+          allOf:
+            - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/ShipmentPartyType'
+          description: 'Booking Party information'
+        consignee:
+          allOf:
+            - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/ShipmentPartyType'
+          description: 'Consignee information'
+        requestedRoute:
+          allOf:
+            - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/SimpleShipmentRoute'
+        externalReferences:
+          type: array
+          description: |
+            CargoSmart supporting the following types of reference numbers attached to a particular shipment.
+            - PO (Purchase Order Number)
+            - FR (Forwarder Reference)
+            - AR (Agent's Reference)
+            - INV (Invoice Number)
+            - CTR (Contract Number)
+            - CR (Customer Reference Number)
+            - SID (Shipper's Identifying Number For Shipment), Mandatory. SID is the identifier of a Booking Request for Amendment
+            - BL (Bill of Lading Reference Number)
+            - BKG (Booking Number)
+            - TARIF (Tariff Item No.)
+          items:
+            allOf:
+              - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/ExternalReferenceType'
+          example: 
+            - referenceNumber: '5258530019'
+              referenceDescription: 'Booking Number'
+              referenceType: 'BKG'
+            - referenceNumber: '234567'
+              referenceDescription: 'Shipper''s Identifying Number for Shipment'
+              referenceType: 'SID'              
+        requestedDepartureWindow:
+          type: object
+          properties:
+            from:
+              $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/DateTimeType'
+            #to:
+             # $ref: '#/components/schemas/DateTimeType'
+            locationType:
+              type: string
+              enum:
+                - POR
+                - POL
+        requestedArrivalWindow:
+          type: object
+          properties:
+            from:
+              $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/DateTimeType'
+            #to:
+             # $ref: '#/components/schemas/DateTimeType'
+            locationType:
+              type: string
+              enum:
+                - FND
+                - POD
+        containers:
+          type: array
+          items:
+            type: object
+            required:
+              - cargosmartContainerSizeType
+              - quantity
+              - estimatedContainerGrossWeight
+              - estimatedContainerNetWeight
+              - haulage
+              - por
+              - fnd
+              - routePoints
+            properties:
+              cargosmartContainerSizeType:
+                type: string
+                description: |
+                  CargoSmart Container size type
+                  - 28U0 (20'x4'3" Open Top)
+                  - 22G0 (20' General Purpose)
+                  - 22G2 (20' Open Side)
+                  - 22G4 (20' General Purpose Hanger)
+                  - 22V0 (20' General Purpose, with Ventilation)
+                  - 22R0 (20' Reefer)
+                  - 22H0 (20' Thermal)
+                  - 22T0 (20' Tank)
+                  - 22U0 (20' Open Top)
+                  - 22P1 (20' Flatrack)
+                  - 22P3 (20' Platform)
+                  - 25G0 (20' High Cube)
+                  - 25R0 (20' High Cube Reefer)
+                  - 48U1 (40'x4'3" Open Top)
+                  - 42G0 (40' General Purpose)
+                  - 42G4 (40' General Purpose Hanger)
+                  - 42V0 (40' General Purpose, with Ventilation)
+                  - 42R0 (40' Reefer)
+                  - 42H0 (40' Thermal)
+                  - 42T0 (40' Tank)
+                  - 42U0 (40' Open Top)
+                  - 42P1 (40' Flatrack)
+                  - 42P3 (40' Platform)
+                  - 45G0 (40' High Cube)
+                  - 45G4 (40' High Cube Hanger)
+                  - 45R0 (40' High Cube Reefer)
+                  - L2G0 (45' General Purpose)
+                  - L5G0 (45' High Cube)
+                  - L5R0 (45' High Cube Reefer)
+                example: 22G0
+                enum:
+                  - 28U0
+                  - 22G0
+                  - 22G2
+                  - 22G4
+                  - 22V0
+                  - 22R0
+                  - 22H0
+                  - 22T0
+                  - 22U0
+                  - 22P1
+                  - 22P3
+                  - 25G0
+                  - 25R0
+                  - 48U1
+                  - 42G0
+                  - 42G4
+                  - 42V0
+                  - 42R0
+                  - 42H0
+                  - 42T0
+                  - 42U0
+                  - 42P1
+                  - 42P3
+                  - 45G0
+                  - 45G4
+                  - 45R0
+                  - L2G0
+                  - L5G0
+                  - L5R0
+              partnerContainerSizeType:
+                type: string
+                description: 'Partner''s Container size type'
+                example: 22G0
+              carrierContainerSizeType:
+                type: string
+                description: 'Container size type in ISO 6346 format'
+                example: 22G0
+              quantity:
+                type: integer
+                description: 'The number of containers requested'
+                example: 1
+              estimatedContainerGrossWeight:
+                description: 'Average gross weight per container'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/WeightType'
+              estimatedContainerNetWeight:
+                description: 'Average net weight per container'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/WeightType'
+              estimatedContainerVolume:
+                description: 'Average volume per container'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/VolumeType'
+              isSOC:
+                type: boolean
+                default: false
+                description: 'Is shipper''s own container or not'
+              haulage:
+                description: 'Haulage Arrangement'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/HaulageType'
+              emptyPickupDateTime:
+                description: 'Date of the empty container needs to be picked up.'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/DateTimeType'
+              fullReturnDateTime:
+                description: 'Date of the full container needs to be return.'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/DateTimeType'
+              por:
+                description: 'POR information'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/SimpleCityType'
+                example:
+              fnd:
+                description: 'FND information'
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/SimpleCityType'
+                example:
+              routePoints:
+                description: 'The route points for each Container' 
+                allOf:
+                  - $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/RoutePointType'
+                example:
+        cargos:
+          type: array
+          description: Can be empty cargo meaning shipping of empty container such as SOC case
+          minItems: 0
+          items:
+            $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/CargoType'
+          example:
+            - cargoSequence: 1
+              cargoNature: 'GC'
+              cargoDescrption: 'General Cargo'
+              packaging:
+                packageType: 'BG'
+                packageQty: 100
+                packageDescription: 'Bags'
+              grossWeight:
+                weight: 100.1
+                weightUnit: 'KGS'
+              netWeght:
+                weight: 100.1
+                weightUnit: 'KGS'
+              volume:
+                volume: 5
+                volumeUnit: 'CBF'
+              marksAndNumbers:
+                marksAndNumbersSequence: 1
+                marksAndNumbersDescription: 'General Cargo with Bags'
+            - cargoSequence: 2
+              cargoNature: 'DG'
+              cargoDescrption: 'Danger Goods'
+              packaging:
+                packageType: 'BX'
+                packageQty: 10
+                packageDescription: 'Box'
+              grossWeight:
+                weight: 20.1
+                weightUnit: 'KGS'
+              netWeght:
+                weight: 20.1
+                weightUnit: 'KGS'
+              volume:
+                volume: 3
+                volumeUnit: 'CBF'
+              marksAndNumbers:
+                marksAndNumbersSequence: 1
+                marksAndNumbersDescription: 'Danger Cargo with Box'
+              dgCargoSpec:
+                imdgPage: 'IMCOP'
+                imcoClass: 'IMCOC'
+                unNumber: '2345'
+                technicalName: 'This is a farmable goods'
+                properShippingName: 'Proper Shipping Name'
+                packageGroup:
+                  code: '1'
+                  innerPackageDescription:
+                    packageType: 'BX'
+                    packageQty: 10
+                    packageDescription: 'Box'
+                mfagNumber: 'MFAG'
+                emsNumber: '123'
+                grossWeight:
+                  weight: 20.1
+                  weightUnit: 'KGS'
+                flashPoint:
+                  temperature: 40
+                  temperatureUnit: 'C'
+                elevatedTemparture:
+                  temperature: 20.1
+                  temperatureUnit: 'C'
+                isLimitedQuantity: false
+                isInhalationHazardous: false
+                isReportableQuantity: false
+                isEmptyUnclean: false
+                isMarinePollutant: false
+                remarks: 'DG Remarks'
+                emergencyContacts:
+                  firstName: John
+                  lastName: Lee
+                  contactPhone:
+                    number: '66667778'
+                    areaCode: '1'
+                    countryCode: '1'
+                  contactFax:
+                    number: '66667777'
+                    areaCode: '1'
+                    countryCode: '1'
+                  contactEmailAddress: john.lee@universal.com 
+        specialInstruction:
+          type: object
+          properties:
+            specialHandlings:
+              type: array
+              items:
+                $ref: './shipmentContextType-1.0.0-openapi3.yaml#/components/schemas/SpecialHandlingType'
+            exportDeclarationRequired:
+              description: |
+                Export Declaration Required. Default as 'NS' if no value is provided.
+                - S (Submitting forms)
+                - F (Filing electonically)
+                - N (No export declaration)
+                - NS (Nont specified)
+              type: string
+              default: 'NS'
+              enum:
+                - S
+                - F
+                - 'N'
+                - NS
+        remarks:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              remarkType:
+                type: string
+      example:
+        {
+          "requestorBookingReference": "234567",
+          "carrierBookingNumber": "5258530019",
+          "actionType": "NEW",
+          "carrier": {
+            "scac": "OOLU",
+            "name": "Orient Overseas Container Line"
+          },
+          "bookingOffice": "HKG",
+          "creationDetails": {
+            "requestedBy": "John Lee",
+            "emailAddress": "john.lee@univerial.com",
+            "requestedDateTime": {
+              "local": "2022-07-10T06:11:01.263+08:00"
+            }
+          },
+          "notificationEmailAddress": "john.lee@universal.com",
+          "shipmentCargoType": "GC",
+          "shipmentTrafficMode": {
+            "outBound": "FCL",
+            "inBound": "FCL"
+          },
+          "totalNumberOfPackage": 10,
+          "totalNumberOfEquipment": 2,
+          "shipper": {
+            "partyName": "Universal Company Ltd.",
+            "carrierCustomerCode": "SAP2323444",
+            "isNeedReplyPartyEmail": true,
+            "contact": {
+              "firstName": "John",
+              "lastName": "Lee",
+              "contactPhone": {
+                "number": "66667778",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactFax": {
+                "number": "66667777",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactEmailAddress": "john.lee@universal.com"
+            },
+            "address": {
+              "country": "United States",
+              "address": "10/F Universal Building",
+              "city": "California",
+              "county": "Oakland",
+              "state": ""
+            },
+            "salesOfficeCode": "CHN"
+          },
+          "forwarder": {
+            "partyName": "Universal Company Ltd.",
+            "carrierCustomerCode": "SAP2323444",
+            "isNeedReplyPartyEmail": true,
+            "contact": {
+              "firstName": "John",
+              "lastName": "Lee",
+              "contactPhone": {
+                "number": "66667778",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactFax": {
+                "number": "66667777",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactEmailAddress": "john.lee@universal.com"
+            },
+            "address": {
+              "country": "United States",
+              "address": "10/F Universal Building",
+              "city": "California",
+              "county": "Oakland",
+              "state": ""
+            },
+            "salesOfficeCode": "CHN"
+          },
+          "bookingParty": {
+            "partyName": "Universal Company Ltd.",
+            "carrierCustomerCode": "SAP2323444",
+            "isNeedReplyPartyEmail": true,
+            "contact": {
+              "firstName": "John",
+              "lastName": "Lee",
+              "contactPhone": {
+                "number": "66667778",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactFax": {
+                "number": "66667777",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactEmailAddress": "john.lee@universal.com"
+            },
+            "address": {
+              "country": "United States",
+              "address": "10/F Universal Building",
+              "city": "California",
+              "county": "Oakland",
+              "state": ""
+            },
+            "salesOfficeCode": "CHN"
+          },
+          "consignee": {
+            "partyName": "Universal Company Ltd.",
+            "carrierCustomerCode": "SAP2323444",
+            "isNeedReplyPartyEmail": true,
+            "contact": {
+              "firstName": "John",
+              "lastName": "Lee",
+              "contactPhone": {
+                "number": "66667778",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactFax": {
+                "number": "66667777",
+                "areaCode": "1",
+                "countryCode": "1"
+              },
+              "contactEmailAddress": "john.lee@universal.com"
+            },
+            "address": {
+              "country": "United States",
+              "address": "10/F Universal Building",
+              "city": "California",
+              "county": "Oakland",
+              "state": ""
+            },
+            "salesOfficeCode": "CHN"
+          },
+          "requestedRoute": {
+            "haulage": {
+              "outBound": "C",
+              "inBound": "C"
+            },
+            "por": {
+              "locationName": "Hong Kong",
+              "cityDetails": {
+                "unLocode": "HKHKG",
+                "country": "HKG",
+                "city": "Hong Kong",
+                "county": "",
+                "state": ""
+              }
+            },
+            "fnd": {
+              "locationName": "Long Beach",
+              "cityDetails": {
+                "unLocode": "USLGB",
+                "country": "USA",
+                "city": "Long Beach",
+                "county": "Los Angeles",
+                "state": "California"
+              }
+            },
+            "firstPOL": {
+              "port": {
+                "portName": "Hong Kong",
+                "portCode": "HKHKG",
+                "city": "Hong Kong",
+                "locationCode": {
+                  "unLocationCode": "HKHKG"
+                },
+                "country": "Hong Kong"
+              }
+            },
+            "lastPOD": {
+              "port": {
+                "portName": "Long Beach",
+                "portCode": "USLGB",
+                "city": "Long Beach",
+                "county": "Los Angeles",
+                "state": "California",
+                "locationCode": {
+                  "unLocationCode": "HKHKG"
+                },
+                "country": "USA"
+              }
+            },
+            "voyageInfo": {
+              "firstPOLOutboundVoyage": {
+                "service": "KTX2",
+                "vessel": "422",
+                "vesselName": "OOCL SAVANNAH",
+                "vesselNationality": "Hong Kong, China",
+                "voyage": "422S",
+                "direction": "S",
+                "vesselImo": "9404871",
+                "callSign": "VRGO8"
+              },
+              "lastPODInboundVoyage": {
+                "service": "JPSW",
+                "vessel": "072",
+                "vesselName": "NYK VENUS",
+                "vesselNationality": "Panama",
+                "voyage": "072E",
+                "direction": "E",
+                "vesselImo": "9312793",
+                "callSign": "3EJG5"
+              }
+            },
+            "routePoints": [
+              {
+                "pointSequence": 1,
+                "pointRole": "FirstPOL",
+                "location": {
+                  "locationName": "Hong Kong",
+                  "unLocode": "HKHKG",
+                  "portName": "Hong Kong",
+                  "portCode": "HKHKG",
+                  "city": "Hong Kong",
+                  "country": "Hong Kong"
+                },
+                "arrivingTransportInfo": {
+                  "mode": "Vessel",
+                  "voyageInfo": {
+                    "service": "KTX2",
+                    "vessel": "422",
+                    "vesselName": "OOCL SAVANNAH",
+                    "vesselNationality": "Hong Kong, China",
+                    "voyage": "422S",
+                    "direction": "S",
+                    "vesselImo": "9404871",
+                    "callSign": "VRGO8"
+                  },
+                  "eta": {
+                    "local": "2022-07-10T06:11:01.263+08:00"
+                  }
+                },
+                "departingTransportInfo": {
+                  "mode": "Vessel",
+                  "voyageInfo": {
+                    "service": "KTX2",
+                    "vessel": "422",
+                    "vesselName": "OOCL SAVANNAH",
+                    "vesselNationality": "Hong Kong, China",
+                    "voyage": "422S",
+                    "direction": "S",
+                    "vesselImo": "9404871",
+                    "callSign": "VRGO8"
+                  },
+                  "etd": {
+                    "local": "2022-07-12T06:11:01.263+08:00"
+                  }
+                }
+              },
+              {
+                "pointSequence": 2,
+                "pointRole": "Transit",
+                "location": {
+                  "locationName": "Kobe",
+                  "unLocode": "JPUKB",
+                  "portName": "Kobe",
+                  "portCode": "JPUKB",
+                  "city": "Kobe",
+                  "country": "Japan"
+                },
+                "arrivingTransportInfo": {
+                  "mode": "Vessel",
+                  "voyageInfo": {
+                    "service": "KTX2",
+                    "vessel": "422",
+                    "vesselName": "OOCL SAVANNAH",
+                    "vesselNationality": "Hong Kong, China",
+                    "voyage": "422S",
+                    "direction": "S",
+                    "vesselImo": "9404871",
+                    "callSign": "VRGO8"
+                  },
+                  "eta": {
+                    "local": "2022-07-16T06:11:01.263+08:00"
+                  }
+                },
+                "departingTransportInfo": {
+                  "mode": "Vessel",
+                  "voyageInfo": {
+                    "service": "JPSW",
+                    "vessel": "072",
+                    "vesselName": "NYK VENUS",
+                    "vesselNationality": "Panama",
+                    "voyage": "072E",
+                    "direction": "E",
+                    "vesselImo": "9312793",
+                    "callSign": "3EJG5"
+                  },
+                  "etd": {
+                    "local": "2022-07-22T06:11:01.263+08:00"
+                  }
+                }
+              },
+              {
+                "pointSequence": 3,
+                "pointRole": "LastPOD",
+                "location": {
+                  "locationName": "Long Beach",
+                  "unLocode": "USLGB",
+                  "portName": "Long Beach",
+                  "portCode": "USLGB",
+                  "city": "Long Beach",
+                  "county": "Los Angeles",
+                  "state": "California",
+                  "country": "USA"
+                },
+                "arrivingTransportInfo": {
+                  "mode": "Vessel",
+                  "voyageInfo": {
+                    "service": "JPSW",
+                    "vessel": "072",
+                    "vesselName": "NYK VENUS",
+                    "vesselNationality": "Panama",
+                    "voyage": "072E",
+                    "direction": "E",
+                    "vesselImo": "9312793",
+                    "callSign": "3EJG5"
+                  },
+                  "eta": {
+                    "local": "2022-07-30T06:11:01.263+08:00"
+                  }
+                }
+              }
+            ]
+          },
+          "externalReferences": [
+            {
+              "referenceNumber": "5258530019",
+              "referenceDescription": "Booking Number",
+              "referenceType": "BKG"
+            },
+            {
+              "referenceNumber": "234567",
+              "referenceDescription": "Shipper's Identifying Number for Shipment",
+              "referenceType": "SID"
+            }
+          ],
+          "requestedDepartureWindow": {
+            "from": {
+              "local": "2022-07-10T06:11:01.263+08:00"
+            },
+            "locationType": "POR"
+          },
+          "requestedArrivalWindow": {
+            "from": {
+              "local": "2022-07-10T06:11:01.263+08:00"
+            },
+            "locationType": "FND"
+          },
+          "containers": [
+            {
+              "cargosmartContainerSizeType": "22G0",
+              "partnerContainerSizeType": "22G0",
+              "carrierContainerSizeType": "22G0",
+              "quantity": 1,
+              "estimatedContainerGrossWeight": {
+                "weight": 100.1,
+                "weightUnit": "KGS"
+              },
+              "estimatedContainerNetWeight": {
+                "weight": 100.1,
+                "weightUnit": "KGS"
+              },
+              "estimatedContainerVolume": {
+                "volume": 5,
+                "volumeUnit": "CBF"
+              },
+              "isSOC": false,
+              "haulage": {
+                "outBound": "C",
+                "inBound": "C"
+              },
+              "emptyPickupDateTime": {
+                "local": "2022-07-10T06:11:01.263+08:00"
+              },
+              "fullReturnDateTime": {
+                "local": "2022-07-10T06:11:01.263+08:00"
+              }
+            }
+          ],
+          "cargos": [
+            {
+              "cargoSequence": 1,
+              "cargoNature": "GC",
+              "cargoDescrption": "General Cargo",
+              "packaging": {
+                "packageType": "BG",
+                "packageQty": 100,
+                "packageDescription": "Bags"
+              },
+              "grossWeight": {
+                "weight": 100.1,
+                "weightUnit": "KGS"
+              },
+              "netWeght": {
+                "weight": 100.1,
+                "weightUnit": "KGS"
+              },
+              "volume": {
+                "volume": 5,
+                "volumeUnit": "CBF"
+              },
+              "marksAndNumbers": {
+                "marksAndNumbersSequence": 1,
+                "marksAndNumbersDescription": "General Cargo with Bags"
+              }
+            },
+            {
+              "cargoSequence": 2,
+              "cargoNature": "DG",
+              "cargoDescrption": "Danger Goods",
+              "packaging": {
+                "packageType": "BX",
+                "packageQty": 10,
+                "packageDescription": "Box"
+              },
+              "grossWeight": {
+                "weight": 20.1,
+                "weightUnit": "KGS"
+              },
+              "netWeght": {
+                "weight": 20.1,
+                "weightUnit": "KGS"
+              },
+              "volume": {
+                "volume": 3,
+                "volumeUnit": "CBF"
+              },
+              "marksAndNumbers": {
+                "marksAndNumbersSequence": 1,
+                "marksAndNumbersDescription": "Danger Cargo with Box"
+              },
+              "dgCargoSpec": {
+                "imdgPage": "IMCOP",
+                "imcoClass": "IMCOC",
+                "unNumber": 2345,
+                "technicalName": "This is a farmable goods",
+                "properShippingName": "Proper Shipping Name",
+                "packageGroup": {
+                  "code": 1,
+                  "innerPackageDescription": {
+                    "packageType": "BX",
+                    "packageQty": 10,
+                    "packageDescription": "Box"
+                  }
+                },
+                "mfagNumber": "MFAG",
+                "emsNumber": 123,
+                "grossWeight": {
+                  "weight": 20.1,
+                  "weightUnit": "KGS"
+                },
+                "flashPoint": {
+                  "temperature": 40,
+                  "temperatureUnit": "C"
+                },
+                "elevatedTemparture": {
+                  "temperature": 20.1,
+                  "temperatureUnit": "C"
+                },
+                "isLimitedQuantity": false,
+                "isInhalationHazardous": false,
+                "isReportableQuantity": false,
+                "isEmptyUnclean": false,
+                "isMarinePollutant": false,
+                "remarks": "DG Remarks",
+                "emergencyContacts": {
+                  "firstName": "John",
+                  "lastName": "Lee",
+                  "contactPhone": {
+                    "number": 66667778,
+                    "areaCode": 1,
+                    "countryCode": 1
+                  },
+                  "contactFax": {
+                    "number": 66667777,
+                    "areaCode": 1,
+                    "countryCode": 1
+                  },
+                  "contactEmailAddress": "john.lee@universal.com"
+                }
+              }
+            }
+          ],
+          "specialInstruction": {
+            "specialHandlings": [
+              {
+                "code": "DFF",
+                "description": "Door Off"
+              }
+            ],
+            "exportDeclarationRequired": "S"
+          },
+          "remarks": [
+            {
+              "value": "string",
+              "remarkType": "string"
+            }
+          ]
+        }
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'
+    Unauthorized:
+      description: unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: './csb2bCommonDomain-1.0.0-openapi3.yaml#/components/schemas/Error'

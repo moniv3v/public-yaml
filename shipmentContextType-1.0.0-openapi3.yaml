@@ -1,0 +1,1485 @@
+# OpenAPI version identifier - required for OpenAPI 3.0 domains
+openapi: 3.0.0
+
+#######################
+# Optional info section
+#######################
+info:
+  title: CargoSmart Shipment Context Components
+  description: |
+    Common components for CargoSmart Shipment related. 
+  contact:
+    name: CargoSmart API Support
+    email: APISUPP@cargosmart.com
+    url: https://www.cargosmart.com  
+  version: 1.0.0   
+components:
+
+  ####################
+  # Common data models
+  ####################
+  schemas:
+    ErrorModel:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    AWCargoSpecType:
+      type: object
+      properties:
+        height:
+          $ref: '#/components/schemas/LengthType'
+        length:
+          $ref: '#/components/schemas/LengthType'
+        width:
+          $ref: '#/components/schemas/LengthType'
+        grossWeight:
+          $ref: '#/components/schemas/WeightType'
+        isShipsideDelivery:
+          type: boolean
+        remarks:
+          type: string
+        emergencyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CargoContactType'
+    CargoContactType:
+      allOf:
+        - $ref: '#/components/schemas/ContactType'
+        - properties:
+            bound:
+              type: string
+              enum:
+                - INBOUND
+                - OUTBOUND
+    CargoType:
+      type: object
+      required:
+        - cargoNature
+        - cargoDescription
+      properties:
+        cargoSequence:
+          type: integer
+          example: 1
+        cargoNature:
+          type: string
+          description: |
+            Type of Cargo
+            - GC (General Cargo)
+            - RF (Reefer)
+            - DG (Dangerous Goods)
+            - AW (Awkward Cargo)
+            - RD (Reefer Awkward Cargo)
+            - AD (Awkward Dangerous Cargo)          
+          enum:
+            - GC
+            - DG
+            - RF
+            - RD
+            - AD
+            - AW
+          example: GC
+        cargoDescription:
+          type: string
+          description: 'Description of the cargo being declared'
+          example: 'Cargo Description'
+        packaging:
+          $ref: '#/components/schemas/PackagingType'
+        packageGroup:
+          type: object
+          properties:
+            innerPackageDescription:
+              $ref: '#/components/schemas/PackagingType'
+            outerPackageDescription:
+              $ref: '#/components/schemas/PackagingType'
+        grossWeight:
+          $ref: '#/components/schemas/WeightType'
+        netWeight:
+          $ref: '#/components/schemas/WeightType'
+        volume:
+          $ref: '#/components/schemas/VolumeType'
+        marksAndNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarksAndNumbersType'
+        harmonizedCode:
+          type: string
+        containerID:
+          description: 'can be used for container and cargo associations'
+          type: string
+        currentContainerNumber:
+          type: string
+        currentContainerCheckDigit:
+          type: string
+        associatedBookingNumber:
+          description: 'for BL'
+          type: string
+        licencePermits:
+          type: array
+          items:
+            type: object
+            properties:
+              number:
+                type: string
+              permitType:
+                type: string
+              dutiableType:
+                type: string
+        containerLoadPlan:
+          type: string
+        reeferCargoSpec:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReeferCargoSpecType'
+        dgCargoSpec:
+          type: array
+          items:
+            $ref: '#/components/schemas/DGCargoSpecType'
+        awCargoSpec:
+          type: array
+          items:
+            $ref: '#/components/schemas/AWCargoSpecType'
+    ContactNumberType:
+      type: object
+      properties:
+        countryCode:
+          type: string
+        areaCode:
+          type: string
+        number:
+          type: string          
+    ContactType:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        contactPhone:
+          $ref: '#/components/schemas/ContactNumberType'
+        contactFax:
+          $ref: '#/components/schemas/ContactNumberType'
+        contactEmailAddress:
+          type: string
+    DateTimeType:
+      type: object
+      properties:
+        utc:
+          type: string
+          description: 'The UTC DateTime in ISO 8601 format'
+          example: '2022-07-10T06:11:01.263Z'
+        local:
+          type: string
+          description: 'The local DateTime in ISO 8601 format'
+          example: '2022-07-10T06:11:01.263+08:00'
+        timeZone:
+          type: string
+          description: 'The local Time Zone'
+          example: 'HKT'    
+    DGCargoSpecType:
+      type: object
+      properties:
+        dgSequenceNumber:
+          type: integer
+        dgRegulator:
+          type: string
+        imdgPage:
+          type: string
+          description: IMCO Page
+        imcoClass:
+          type: string
+          description: IMCO Code
+        unNumber:
+          description: UNDG (United Nations Dangerous Goods) Number Unique serial number assigned within the United Nations to substances and articles contained in a list of the dangerous goods most commonly carried.
+          type: string
+        technicalName:
+          type: string
+        properShippingName:
+          description: Proper dangerous goods shipping name
+          type: string
+        concentration:
+          type: string
+        packageGroup:
+          type: object
+          properties:
+            code:
+              type: string
+              description: |
+                Identification of a packing group by code
+                - 1 (Great Danger)
+                - 2 (Medium Danger)
+                - 3 (Minor Danger)
+              example: '3'
+              enum:
+                - '1'
+                - '2'
+                - '3'
+            innerPackageDescription:
+              $ref: '#/components/schemas/PackagingType'
+            outerPackageDescription:
+              $ref: '#/components/schemas/PackagingType'
+        mfagNumber:
+          type: string
+        emsNumber:
+          type: string
+        psaClass:
+          type: string
+        approvalCode:
+          type: string
+        grossWeight:
+          $ref: '#/components/schemas/WeightType'
+        netWeight:
+          $ref: '#/components/schemas/WeightType'
+        netExplosiveWeight:
+          $ref: '#/components/schemas/WeightType'
+        flashPoint:
+          $ref: '#/components/schemas/TemperatureType'
+        elevatedTemperature:
+          #description: 'also known as carriage temperature'
+          $ref: '#/components/schemas/TemperatureType'
+        controlTemperature:
+          $ref: '#/components/schemas/TemperatureType'
+        emergencyTemperature:
+          $ref: '#/components/schemas/TemperatureType'
+        sadt:
+          #description: 'self-accelerating decomposition temperature'
+          $ref: '#/components/schemas/TemperatureType'
+        isLimitedQuantity:
+          type: boolean
+        isInhalationHazardous:
+          type: boolean
+        isReportableQuantity:
+          type: boolean
+        isEmptyUnclean:
+          type: boolean
+          description: also known as residue last contained
+        isMarinePollutant:
+          type: boolean
+        state:
+          type: string
+        labels:
+          type: array
+          maxItems: 4
+          items:
+            type: string
+        remarks:
+          type: string
+        emergencyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CargoContactType'
+        segregationGroups:
+          type: array
+          items:
+            type: string
+        ibcCode:
+          type: string
+        subsidiaryRisk1:
+          type: string
+          description: 'subsidiary risk 1 value'
+        subsidiaryRiskDescription1:
+          type: string
+          description: 'subsidiary risk 1 unit'
+        subsidiaryRisk2:
+          type: string
+          description: 'subsidiary risk 2 value'
+        subsidiaryRiskDescription2:
+          type: string
+          description: 'subsidiary risk 2 unit'
+        mpaGroup:
+          type: string
+        pkaGroup:
+          type: string
+        erg:
+          type: string
+        isExceptedQty:
+          type: boolean
+        isWaste:
+          type: boolean
+        placards:
+          type: string
+        erap:
+          type: string
+          description: 'emergency response assistance assistance'
+        poisonInhalationHazardZone:
+          type: string
+        fumigation:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 'fumigant name'
+            dosage:
+              type: string
+            dateTime:
+              $ref: '#/components/schemas/DateTimeType'
+    ExternalReferenceType:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+        referenceDescription:
+          type: string
+        referenceType:
+          type: string
+          description: |
+            - ABT (Customs Declaration Number)
+            - AR (Agent's Reference)
+            - BH (House B/L)
+            - BKG (Booking Number)
+            - BL (Bill of Lading Reference Number)
+            - BRF (Broker Reference)
+            - CAR (Carier Code)
+            - CBL (Customshouse Broker License Number)
+            - CE (Class of Contract Code)
+            - CGO (Consignee's Order Number)
+            - CGR (Consignee's Reference)
+            - CH (Customer catalog number)
+            - CIN (Consignee's Invoice Number)
+            - CINV (Commvercial Invoice Number)
+            - CLBL (Co-Loader Bill Of Lading Number)
+            - CR (Customer Reference Number)
+            - CRN (Container Release Number)
+            - CSA (Customer Service Agreement)
+            - CSBKG (CargoSmart Booking Reference Number)
+            - CSLR (Linked Reference Number)
+            - CSO (CSO/Agreement Number)
+            - CTN (Consignee Tax Number)
+            - CTR (Contract Number)
+            - CTRP (Contract Party Reference Number)
+            - CUS (Customs Status Information)
+            - CUSI (Customer Site ID)
+            - CUSIN (Customer's SI Number)
+            - CUSLO (Customer Load Reference)
+            - DCN (Declarant CR Number)
+            - DO (Delivery Order Number)
+            - ECN (Electronic Custom Clearance Number)
+            - ED (Export Declaration)
+            - EI (Employer's Identification Number)
+            - EX (Export License Number)
+            - EXPR (Export Reference Number)
+            - FCBL (First Carrier B/L Number)
+            - FID (File Identifier)
+            - FM (Federal Maritime Commission Forwarders Number)
+            - FR (Forwarder Reference)
+            - FS (FreightSmart Booking Number)
+            - GEN (Government Export Number)
+            - GRN (Government Reference Number)
+            - HDS (Hot Delivery Service)
+            - HO (Shipper's Hazardous Number)
+            - IB (In Bond Number)
+            - IBEID (India Email ID for Buyer)
+            - IBIEC (India Importer Exporter Code for Buyer)
+            - IBSB (Reserved (Inbound Split B/L))
+            - IBTIN (India GST Identification No for Buyer)
+            - ICR (Inbound Customer Reference)
+            - INV (Invoice Number)
+            - ITN (Internal Transaction Number)
+            - IX (Item Number)
+            - KL (Contract Reference)
+            - LEC (Letter of Credit Number)
+            - MA (Ship Notice/Manifest Number)
+            - MB (Master Booking Number)
+            - MBL (Reserved (Memo B/L))
+            - MVID (Motor Vehicle Identification Number)
+            - OTH (Other)
+            - OU (Tariff Supplement Number)
+            - PBN (Pattern Booking Number)
+            - PO (Purchase Order Number)
+            - PR (Price Quote Number)
+            - PRA (Proof of Report for ACI)
+            - PRBL (Pre BL Number)
+            - QUOT (Quotation Number)
+            - ROI (Reference Of Item)
+            - RP (Repetitive Pattern Code)
+            - RPN (Rail Pickup Number)
+            - SC (Service Contract Number)
+            - SCA (SCAC Code)
+            - SCN (Subcontract Number)
+            - SID (Shipper's Identifying Number for Shipment (SID))
+            - SIR (Shipping Instruction Reference)
+            - SKU (SKU Number of Commodity)
+            - SN (Seal Number Qualifier)
+            - SO (Shipping Order Number)
+            - SR (Shipper Reference)
+            - TAIN (Taxing Authority Identification Number)
+            - TARIF (Tariff Item No.)
+            - TG (Transportation Control Number (TCN))
+            - TJ (Federal Taxpayer's Identification Number)
+            - TN (Transaction Reference Number)
+            - TO (Transport Order Number)
+            - TVR (Time Volume Rate)
+            - UC (Unique Consignment Reference Number)
+            - VAN (Vessel Agent Number)
+            - VGM- Shipper VGM Reference)
+            - VID (Vehicle Identification Number)
+            - WARG (Warranty Registration Number)
+            
+            For customs manifest purpose:
+            - SEC (Enterprise Code for Shipper)
+            - CEC (Enterprise Code for Consignee)
+            - NEC (Enterprise Code for Notify Party)
+            - ENC (Enterprise Code)
+    HaulageType:
+      type: object
+      description: |
+        Appointment type:
+            
+        Outbound Appointment Type 
+          - emptyPickup (Merchant Haulage-Pier)
+          - fullReturn (Merchant Haulage-Pier) 
+          - dropOff (Carrier Haulage-Door)
+          - fullPickup (Carrier Haulage-Door)
+
+        Inbound Appointment Type 
+          - shipTo (Carrier Haulage-Door)
+      properties:
+        outBound:
+          type: string
+          description: |
+           - Carrier Haulage (C)
+           - Merchant Haulage (M)
+           - Rail Ramp (R)
+          enum:
+            - C
+            - M
+            - R
+        inBound:
+          type: string
+          description: |
+           - Carrier Haulage (C)
+           - Merchant Haulage (M)
+           - Rail ramp (R)
+          enum:
+            - C
+            - M
+            - R
+      example:
+        outBound: C
+        inBound: C
+    LengthType:
+      type: object
+      properties:
+        length:
+          type: number
+        lengthUnit:
+          type: string
+          enum:
+            - C
+            - 'N'
+            - F
+            - M
+    LocationCodeType:
+      type: object
+      properties:
+        mutuallyDefinedCode:
+          type: string
+        schedKDType:
+          type: string
+        schedKDCode:
+          type: string
+        unLocationCode:
+          type: string
+    LocationType:
+      type: object
+      properties:
+        locationName:
+          type: string
+        unLocode:
+          type: string
+        portName:
+          type: string
+        portCode:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        facilityCode:
+          type: string
+        facilityName:
+          type: string
+        terminalOperator:
+          type: object
+          properties:
+            smdg:
+              type: string
+            name:
+              type: string
+        gpsLocation:
+          description: ISO 6709 format
+          type: string
+        gln:
+          type: string
+        address:
+          type: string
+        timeZone:
+          type: string
+    MarksAndNumbersType:
+      type: object
+      properties:
+        marksAndNumbersSequence:
+          type: integer
+          example: 1
+        marksAndNumbersDescription:
+          type: string
+    OriginDestinationType:
+      type: object
+      properties:
+        locationName:
+          type: string
+        cityDetails:
+          $ref: '#/components/schemas/SimpleCityType'
+        facility:
+          $ref: '#/components/schemas/SimpleFacilityType'
+    PackagingType:
+      type: object
+      properties:
+        packageType:
+          type: string
+          description: |
+            Type of package
+            - BG (Bag)
+            - BL (Bale)
+            - BR (Barrel)
+            - BS (Basket)
+            - BN (Bin)
+            - BI (Bobbin)
+            - BX (Box)
+            - BE (Bucket)
+            - BD (Bundles)
+            - CJ (Cage)
+            - CA (Can)
+            - CQ (Carboy)
+            - CT (Carton)
+            - CS (Case)
+            - CK (Cask)
+            - CH (Chest)
+            - CL (Coil)
+            - CZ (Cones)
+            - CN (Container)
+            - CR (Crate)
+            - CY (Cylinder)
+            - DR (Drum)
+            - FL (Flask)
+            - FR (Frame)
+            - HR (Hamper)
+            - HH (Hogshead)
+            - JR (Jar)
+            - JG (Jug)
+            - KE (Keg)
+            - LV (Liftvan)
+            - PK (Package)
+            - PA (Pail)
+            - PL (Pallet)
+            - PC (Pieces)
+            - RK (Rack)
+            - RE (Reel)
+            - RL (Roll)
+            - SK (Sack)
+            - SH (Sheet)
+            - SD (Skid)
+            - SP (Spool)
+            - TK (Tank)
+            - TA (Tray)
+            - TR (Trunk and Chest)
+            - TF (Tub)
+            - TU (Tube)
+            - UT (Unit)
+            - UP (Unpacked or unpackaged)
+            - VP (Van Pack)
+          example: 'BG'
+          enum:
+            - BG
+            - BL
+            - BR
+            - BS
+            - BN
+            - BI
+            - BX
+            - BE
+            - BD
+            - CJ
+            - CA
+            - CQ
+            - CT
+            - CS
+            - CK
+            - CH
+            - CL
+            - CZ
+            - CN
+            - CR
+            - CY
+            - DR
+            - FL
+            - FR
+            - HR
+            - HH
+            - JR
+            - JG
+            - KE
+            - LV
+            - PK
+            - PA
+            - PL
+            - PC
+            - RK
+            - RE
+            - RL
+            - SK
+            - SH
+            - SD
+            - SP
+            - TK
+            - TA
+            - TR
+            - TF
+            - TU
+            - UT
+            - UP
+            - VP          
+        packageQty:
+          type: integer
+          description: 'Package Quantity'
+          example: 100
+        packageDescription:
+          type: string
+          description: 'Package Description'
+          example: 'Bags'
+        packageMaterial:
+          type: string
+          description: 'Material used for the package being described'
+          example: 'Plastics'
+        packageName:
+          type: string
+          example:
+        packagePlural:
+          type: string
+          example:
+        packageCode:
+          type: string
+          example:
+    PartyReferenceType:
+      type: object
+      properties:
+        referenceType:
+          type: string
+        referenceDescription:
+          type: string
+        number:
+          type: string
+    PartyType:
+      type: object
+      properties:
+        partyType:
+          type: string
+          description: |
+           Shipment Party Type:
+            - BAN (Banker)
+            - BPT (Booking Party)
+            - BRK (Broker)
+            - CAR (Carrier)
+            - CGN (Consignee)
+            - CSB (Customs Broker)
+            - CSR (Customer Service)
+            - CUS (Customer)
+            - FWD (Forwarder)
+            - NPT (Notify Party)
+            - OTH (Other Party)
+            - SHP (Shipper)
+            - TRK (Trucker)
+            - ANP (Also Notify Party)
+            - SIR (SI Owner)
+            - DVA (Delivery Agent)
+            - IVP (Invoice Party)
+            - SHA (Shipping Agency)
+            - DGC (Dangerous Contact)
+            - CSC (Customer Service Contract Party)
+            - CPL (Cargo Pickup Location)
+            - PYR (Payer)
+            - STO (Ship to)
+            - SFR (Ship from)
+            - OSP (To Order)
+            - NP2 (Additional Notify Party)
+            - MRC (Message Recipient)
+            - RQT (Request Party)
+            - GON (Goods Owner)
+            - OOP (Operation Party)
+            - EXP (Exporter)
+            - CCP (Cargo Control Party)
+            - CTP (Contract Party)
+            - BLR (BL Recipient)
+            - VSB (Visible Party)
+            - BKA (Booking Agent)
+          enum:
+            - BAN
+            - BPT
+            - BRK
+            - CAR
+            - CGN
+            - CSB
+            - CSR
+            - CUS
+            - FWD
+            - NPT
+            - OTH
+            - SHP
+            - TRK
+            - ANP
+            - SIR
+            - DVA
+            - IVP
+            - SHA
+            - DGC
+            - CSC
+            - CPL
+            - PYR
+            - STO
+            - SFR
+            - OSP
+            - NP2
+            - MRC
+            - RQT
+            - GON
+            - OOP
+            - EXP
+            - CCP
+            - CTP
+            - BLR
+            - VSB
+            - BKA
+        partyName:
+          type: string
+        carrierCustomerCode:
+          type: string
+        isNeedReplyPartyEmail:
+          type: boolean
+        contact:
+          $ref: '#/components/schemas/ContactType'
+        address:
+          $ref: '#/components/schemas/LocationType'
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartyReferenceType'
+    POLPODType:
+      type: object
+      properties:
+        port:
+          $ref: '#/components/schemas/SimplePortType'
+        facility:
+          $ref: '#/components/schemas/SimpleFacilityType'
+    ReeferCargoSpecType:
+      type: object
+      properties:
+        atmosphereType:
+          type: string
+          enum:
+            - AFAM
+            - CA
+            - MA
+            - MG
+            - NP
+            - MAG
+        temperature:
+          $ref: '#/components/schemas/TemperatureType'
+        ventilation:
+          $ref: '#/components/schemas/VentilationType'
+        gensetType:
+          type: string
+        remarks:
+          type: string
+        co2:
+          type: string
+        o2:
+          type: string
+        ventSettingCode:
+          type: string
+          enum:
+            - 10OPN
+            - 25OPN
+            - 50OPN
+            - 75OPN
+            - 100OPN
+            - CLOSED
+            - OTHER
+        dehumidityPercentage:
+          type: integer
+        sensitiveCargoDesc:
+          type: string
+        isPreCoolingReq:
+          type: boolean
+        isControlledAtmosphere:
+          type: boolean
+        isReeferOperational:
+          type: boolean
+        emergencyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CargoContactType'
+    RoutePointType:
+      type: object
+      description: 'reperenting route and route legs into points'
+      required:
+        - pointSequence
+        - location
+        - arrivingTransportInfo
+        - departingTransportInfo
+      properties:
+        pointSequence:
+          type: integer
+        pointRole:
+          type: string
+          enum:
+            - EmptyPickup
+            - FullReturn
+            - FirstPOL
+            - Transit
+            - LastPOD
+            - FinalHub
+            - EmptyReturn
+        location:
+          $ref: '#/components/schemas/LocationType'
+        isCustomerRequested:
+          type: boolean
+          description: 'if true, this is a stop off point requested by customer'
+        arrivingTransportInfo:
+          type: object
+          required:
+            - mode
+          properties:
+            mode:
+              type: string
+              enum:
+                - Vessel
+                - Truck
+                - Rail
+                - Feeder
+                - Barge
+                - Air
+                - Other
+            vendor:
+              $ref: '#/components/schemas/VendorType'
+            voyageInfo:
+              $ref: '#/components/schemas/SimpleSVVDType'
+            eta:
+              #description: 'estimated time of arrival'
+              $ref: '#/components/schemas/DateTimeType'
+            ata:
+              #description: 'actual time of arrival'
+              $ref: '#/components/schemas/DateTimeType'
+        departingTransportInfo:
+          type: object
+          required:
+            - mode
+          properties:
+            mode:
+              type: string
+              enum:
+                - Vessel
+                - Truck
+                - Rail
+                - Feeder
+                - Barge
+                - Air
+                - Other
+            vendor:
+              $ref: '#/components/schemas/VendorType'
+            voyageInfo:
+              $ref: '#/components/schemas/SimpleSVVDType'
+            voyageBlockCode:
+              type: string
+            etd:
+              #description: 'estimated time of departure'
+              $ref: '#/components/schemas/DateTimeType'
+            atd:
+              #description: 'actual time of departure'
+              $ref: '#/components/schemas/DateTimeType'
+    SealDefType:
+      type: object
+      properties:
+        sealType:
+          type: string
+          description: |
+            Seal Type:
+            - CA (Carrier)
+            - CU (Customs)
+            - SH (Shipper)
+            - TO (Terminal Operator)
+            - AC (Quaratine agency)
+          example: CA
+          enum:
+            - CA
+            - CU
+            - SH
+            - TO
+            - AC
+        sealNumber:
+          type: string
+          description: Seal number
+          example: KG323405
+    ShipmentPartyType:
+      type: object
+      properties:
+        partyName:
+          type: string
+        carrierCustomerCode:
+          type: string
+        isNeedReplyPartyEmail:
+          type: boolean
+        contact:
+          $ref: '#/components/schemas/ContactType'
+        address:
+          $ref: '#/components/schemas/LocationType'
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartyReferenceType'
+        salesOfficeCode:
+          nullable: true
+          type: string
+        customerCarrierCode:
+          nullable: true
+          type: string
+        codeListQualifier:
+          nullable: true
+          type: string
+        chargePaymentInstructions:
+          nullable: true
+          type: array
+          items:
+            type: object
+            properties:
+              chargeCategoryCode:
+                nullable: true
+                type: string
+              prepaidCollectIndicator:
+                type: string
+                enum:
+                  - Prepaid
+                  - Collect
+              paymentLocation:
+                type: object
+                nullable: true
+                properties:
+                  city:
+                    $ref: '#/components/schemas/SimpleCityType'
+                  locationName:
+                    nullable: true
+                    type: string
+      example:
+        partyName: 'Universal Company Ltd.'
+        carrierCustomerCode: 'SAP2323444'
+        isNeedReplyPartyEmail: true
+        contact:
+          firstName: 'John'
+          lastName: 'Lee'
+          contactPhone:
+            number: '66667778'
+            areaCode: '1'
+            countryCode: '1'
+          contactFax:
+            number: '66667777'
+            areaCode: '1'
+            countryCode: '1'
+          contactEmailAddress: 'john.lee@universal.com'
+        address:
+          facilityCode: ''
+          country: 'United States'
+          address: '10/F Universal Building'
+          city: 'California'
+          county: 'Oakland'
+          gln: ''
+          timeZone: 'PST'
+          unLocode: 'USCA2'
+          state: ''
+          facilityName: ''
+        salesOfficeCode: 'CHN'
+    SimpleCityType:
+      type: object
+      properties:
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        unLocode:
+          type: string
+    SimpleFacilityType:
+      type: object
+      properties:
+        facilityCode:
+          type: string
+        facilityName:
+          type: string
+    SimplePortType:
+      type: object
+      properties:
+        portName:
+          type: string
+        portCode:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        locationCode:
+          $ref: '#/components/schemas/LocationCodeType'
+        country:
+          type: string
+    SimpleShipmentRoute:
+      type: object
+      description: 'The end to end shipment route'
+      properties:
+        haulage:
+          allOf:
+            - $ref: '#/components/schemas/HaulageType'
+        por:
+          allOf:
+            - $ref: '#/components/schemas/OriginDestinationType'
+          description: 'Place of Receipt'
+          example:
+            locationName: 'Hong Kong'
+            cityDetails:
+              unLocode: 'HKHKG'
+              country: 'HKG'
+              city: 'Hong Kong'
+        fnd:
+          allOf:
+            - $ref: '#/components/schemas/OriginDestinationType'
+          description: 'Place of Delivery'
+          example:
+            locationName: 'Long Beach'
+            cityDetails:
+              unLocode: 'USLGB'
+              country: 'USA'
+              city: 'Long Beach'
+              county: 'Los Angeles'
+              state: 'California'
+        firstPOL:
+          allOf:
+            - $ref: '#/components/schemas/POLPODType'
+          example:
+            port:
+              portName: 'Hong Kong'
+              portCode: 'HKHKG'
+              city: 'Hong Kong'
+              locationCode:
+                unLocationCode: 'HKHKG'
+              country: 'Hong Kong'
+        lastPOD:
+          allOf:
+           - $ref: '#/components/schemas/POLPODType'
+          example:
+            port:
+              portName: 'Long Beach'
+              portCode: 'USLGB'
+              city: 'Long Beach'
+              county: 'Los Angeles'
+              state: 'California'
+              locationCode:
+                unLocationCode: 'HKHKG'
+              country: 'USA'
+        voyageInfo:
+          type: object
+          properties:
+            firstPOLOutboundVoyage:
+              allOf: 
+                - $ref: '#/components/schemas/SimpleSVVDType'
+              example:
+                service: 'KTX2'
+                vessel: '422'
+                vesselName: 'OOCL SAVANNAH'
+                vesselNationality: 'Hong Kong, China'
+                voyage: '422S'
+                direction: 'S'
+                vesselImo: '9404871'
+                callSign: 'VRGO8'
+            lastPODInboundVoyage:
+              allOf:
+                - $ref: '#/components/schemas/SimpleSVVDType'
+              example:
+                service: 'JPSW'
+                vessel: '072'
+                vesselName: 'NYK VENUS'
+                vesselNationality: 'Panama'
+                voyage: '072E'
+                direction: 'E'
+                vesselImo: '9312793'
+                callSign: '3EJG5'                
+        routePoints:
+          allOf:
+            - $ref: '#/components/schemas/RoutePointType'
+          description: 'The shipment route legs'
+          example:
+            - pointSequence: 1
+              pointRole: 'FirstPOL'
+              location:
+                locationName: 'Hong Kong'
+                unLocode: 'HKHKG'
+                portName: 'Hong Kong'
+                portCode: 'HKHKG'
+                city: 'Hong Kong' 
+                country: 'Hong Kong' 
+                facilityCode: 'HIT'
+                facilityName: 'Hong Kong International Terminals'
+              arrivingTransportInfo:
+                mode: "Vessel"
+                voyageInfo:
+                  service: 'KTX2'
+                  vessel: '422'
+                  vesselName: 'OOCL SAVANNAH'
+                  vesselNationality: 'Hong Kong, China'
+                  voyage: '422S'
+                  direction: 'S'
+                  vesselImo: '9404871'
+                  callSign: 'VRGO8'                   
+                eta:
+                  local: '2022-07-10T06:11:01.263+08:00'
+              departingTransportInfo:
+                mode: "Vessel"
+                voyageInfo:
+                  service: 'KTX2'
+                  vessel: '422'
+                  vesselName: 'OOCL SAVANNAH'
+                  vesselNationality: 'Hong Kong, China'
+                  voyage: '422S'
+                  direction: 'S'
+                  vesselImo: '9404871'
+                  callSign: 'VRGO8'                  
+                etd:
+                  local: '2022-07-12T06:11:01.263+08:00'
+            - pointSequence: 2
+              pointRole: 'Transit'
+              location:
+                locationName: 'Kobe'
+                unLocode: 'JPUKB'
+                portName: 'Kobe'
+                portCode: 'JPUKB'
+                city: 'Kobe' 
+                country: 'Japan' 
+                facilityCode: 'KICT'
+                facilityName: 'PC15/16/17 (Sankyu)'
+              arrivingTransportInfo:
+                mode: "Vessel"
+                voyageInfo:
+                  service: 'KTX2'
+                  vessel: '422'
+                  vesselName: 'OOCL SAVANNAH'
+                  vesselNationality: 'Hong Kong, China'
+                  voyage: '422S'
+                  direction: 'S'
+                  vesselImo: '9404871'
+                  callSign: 'VRGO8'                   
+                eta:
+                  local: '2022-07-16T06:11:01.263+08:00'
+              departingTransportInfo:
+                mode: "Vessel"
+                voyageInfo:
+                  service: 'JPSW'
+                  vessel: '072'
+                  vesselName: 'NYK VENUS'
+                  vesselNationality: 'Panama'
+                  voyage: '072E'
+                  direction: 'E'
+                  vesselImo: '9312793'
+                  callSign: '3EJG5'                    
+                etd:
+                  local: '2022-07-22T06:11:01.263+08:00'
+            - pointSequence: 3
+              pointRole: 'LastPOD'
+              location:
+                locationName: 'Long Beach'
+                unLocode: 'USLGB'
+                portName: 'Long Beach'
+                portCode: 'USLGB'
+                city: 'Long Beach' 
+                county: 'Los Angeles'
+                state: 'California'
+                country: 'USA' 
+                facilityCode: 'YTI'
+                facilityName: 'Yusen Terminals, Inc.'
+              arrivingTransportInfo:
+                mode: "Vessel"
+                voyageInfo:
+                  service: 'JPSW'
+                  vessel: '072'
+                  vesselName: 'NYK VENUS'
+                  vesselNationality: 'Panama'
+                  voyage: '072E'
+                  direction: 'E'
+                  vesselImo: '9312793'
+                  callSign: '3EJG5'                    
+                eta:
+                  local: '2022-07-30T06:11:01.263+08:00'
+    SimpleSVVDType:
+      type: object
+      properties:
+        service:
+          type: string
+          description: 'Service code of this voyage'
+          example: 'AE01'
+        vessel:
+          type: string
+          description: 'Vessel Code in carrier system'
+          example: 'ABC1'
+        vesselName:
+          type: string
+          description: 'Vessel Name'
+          example: 'CMA CGM Canada'
+        vesselNationality:
+          type: string
+        voyage:
+          type: string
+          description: 'Voyage code'
+          example: '003E'
+        direction:
+          type: string
+          description: 'Voyage direction. East(E), South(S), West(W) and North(N)'
+          example: 'E'
+        lloydsNumber:
+          type: string
+          description: 'DEPRECATED - use vesselImo'
+        vesselImo:
+          type: string
+          description: 'IMO Number of this veseel'
+          example: '9909088'
+        callSign:
+          type: string
+          description: >-
+            A Call Sign is a unique alphanumeric identity that belongs to the
+            vessel and acts in the same way as the registration number of a car
+          example: VRKR5
+    SpecialHandlingType:
+      type: object
+      description: Special Handling Type
+      properties:
+        code:
+          type: string
+          description: |
+            Special Handling Type Code.
+            - DFF (Door Off)
+            - EW (Excessive Weight)
+            - NIPT (No Partials)
+            - OFU (Require Fumigation by Carrier)
+            - OOB (Cargo On-Board Certification Required)
+            - OOD (Stow On Deck)
+            - OSB (Stow Below Deck)
+            - OST (Stow Between Decks)
+            - OTC (Temperature Control)
+            - NONE (None)
+          enum:
+            - DFF
+            - EW
+            - NPT
+            - OFU
+            - OOB
+            - OOD
+            - OSB
+            - OTC
+            - OST
+            - NONE
+          example: DFF
+        description: 
+          description: Special handling instructions
+          type: string
+          example: Door Off
+    TemperatureType:
+      type: object
+      properties:
+        temperature:
+          type: number
+        temperatureUnit:
+          type: string
+          enum:
+            - F
+            - C
+    VendorType:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'could be SCAC, rail or truck company code'
+        name:
+          type: string
+    VentilationType:
+      type: object
+      properties:
+        ventilation:
+          type: integer
+        ventilationUnit:
+          type: string
+          enum:
+            - degrees
+            - cbfPerMin
+            - cbmPerHour
+            - percentage
+    VolumeType:
+      type: object
+      properties:
+        volume:
+          type: number
+          description: Volume
+          format: double
+          example: 5          
+        volumeUnit:
+          type: string
+          description: |
+            Units uses for volume
+            - CBF (Cubic foot)
+            - CBS (Cubic meters per hour)
+          example: CBF
+          enum:
+            - CBF
+            - CBS
+    WeightType:
+      type: object
+      properties:
+        weight:
+          type: number
+          description: Weight
+          format: double
+          example: 100.1          
+        weightUnit:
+          type: string
+          description: |
+            Units uses for weight
+            - TON (Tons)
+            - LBS (Pounds)
+            - KGS (Kilograms)
+          example: 'KGS'
+          enum:
+            - KGS
+            - LBS
+            - TON
+
+  ####################
+  # Common parameters
+  ####################
+#  parameters:
+#    offsetParam:
+#      name: offset
+#      in: query
+#      schema:
+#        type: integer
+#        minimum: 0
+#      description: The number of items to skip before returning the results
+#    limitParam:
+#      in: query
+#      name: limit
+#      schema:
+#        type: integer
+#        format: int32
+#        minimum: 1
+#        maximum: 100
+#        default: 20
+#      description: The number of items to return
+
+  #######################
+  # Common request bodies
+  #######################
+#  requestBodies:
+#    NewItem:
+#      description: A JSON object containing item data
+#      required: true
+#      content:
+#        application/json:
+#          schema:
+#            type: object
+
+  ####################
+  # Common responses
+  ####################
+#  responses:
+#    GeneralError:
+#      description: An error occurred
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/ErrorModel'
+#      headers:
+#        X-RateLimit-Limit:
+#          $ref: '#/components/headers/X-RateLimit-Limit'
+#        X-RateLimit-Remaining:
+#          $ref: '#/components/headers/X-RateLimit-Remaining'
+
+  #########################
+  # Common headers
+  # (except request headers - they are defined as parameters)
+  #########################
+#  headers:
+#    X-RateLimit-Limit:
+#      description: Request limit per hour
+#      schema:
+#        type: integer
+#      example: 100
+#    X-RateLimit-Remaining:
+#      description: Remaining requests for the hour
+#      schema:
+#        type: integer
+#      example: 94
+
+  #######################
+  # Common path items
+  #######################
+#  pathitems:
+#    EntityOperations:
+#      get:
+#        summary: Get all items
+#        description: This operation supports pagination
+#        parameters:
+#          - $ref: '#/components/parameters/offsetParam'
+#          - $ref: '#/components/parameters/limitParam'
+#        responses:
+#          '200':
+#            description: A list of items
+#          default:
+#            $ref: '#/components/responses/GeneralError'
+#      post:
+#        summary: Add a new item
+#        requestBody:
+#          $ref: '#/components/requestBodies/NewItem'
+#        responses:
+#          '201':
+#            description: Created
+
+  ######################################
+  # Common examples of input/output data
+  ######################################
+#  examples:
+#    tshirt:
+#      summary: Sample T-shirt data
+#      value:
+#        # Example value starts here
+#        id: 17
+#        name: T-shirt
+#        description: 100% cotton shirt
+#        categories: [clothes]
+
+  #########################
+  # Common link definitions
+  # See: https://swagger.io/docs/specification/links/
+  #########################
+#  links: {}
+
+  #########################
+  # Common callback definitions
+  # See: https://swagger.io/docs/specification/callbacks/
+  #########################
+#  callbacks: {}
